@@ -5,6 +5,7 @@ import {
   deleteTodo,
   fetchFilteredTodos,
   fetchTodos,
+  updateTodo,
 } from "../api/todoApi";
 import { Todo, TodoFilter, TodoInput } from "../types/todo";
 
@@ -31,7 +32,7 @@ export function useTodos() {
   });
 
   const updateTodoMutation = useMutation({
-    mutationFn: createTodo,
+    mutationFn: updateTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
