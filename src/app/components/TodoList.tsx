@@ -21,6 +21,13 @@ export default function TodoList() {
     isDeleting,
   } = useTodos();
 
+  const handleDelete = (id: string) => {
+    const confirmed = window.confirm("정말로 삭제하시겠습니까?");
+    if (confirmed) {
+      removeTodo(id);
+    }
+  };
+
   if (isError) {
     return (
       <div className="rounded-md bg-destructive/10 p-4 text-destructive">
@@ -50,7 +57,7 @@ export default function TodoList() {
               todo={todo}
               onToggle={toggleTodo}
               onEdit={editTodo}
-              onDelete={removeTodo}
+              onDelete={() => handleDelete(todo.id)}
               isUpdating={isUpdating}
               isDeleting={isDeleting}
             />
