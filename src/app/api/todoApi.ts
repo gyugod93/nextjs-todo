@@ -4,7 +4,7 @@ import { Todo, TodoFilter, TodoInput } from "../types/todo";
 const API_URL = "http://localhost:3001";
 
 export const fetchTodos = async (): Promise<Todo[]> => {
-  const response = await fetch(`${API_URL}/todos`);
+  const response = await fetch("api/todos");
   if (!response.ok) {
     throw new Error("Failed to fetch todos");
   }
@@ -14,7 +14,7 @@ export const fetchTodos = async (): Promise<Todo[]> => {
 export const fetchFilteredTodos = async (
   filter: TodoFilter
 ): Promise<Todo[]> => {
-  let url = `${API_URL}/todos`;
+  let url = "api/todos";
 
   if (filter === "active") {
     url += "?completed=false";
@@ -30,7 +30,7 @@ export const fetchFilteredTodos = async (
 };
 
 export const createTodo = async (todoInput: TodoInput): Promise<Todo> => {
-  const response = await fetch(`${API_URL}/todos`, {
+  const response = await fetch("api/todos", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export const createTodo = async (todoInput: TodoInput): Promise<Todo> => {
 };
 
 export const updateTodo = async (todo: Todo): Promise<Todo> => {
-  const response = await fetch(`${API_URL}/todos/${todo.id}`, {
+  const response = await fetch(`api/todos/${todo.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -63,7 +63,7 @@ export const updateTodo = async (todo: Todo): Promise<Todo> => {
 };
 
 export const deleteTodo = async (id: string): Promise<void> => {
-  const response = await fetch(`${API_URL}/todos/${id}`, {
+  const response = await fetch(`api/todos/${id}`, {
     method: "DELETE",
   });
 
