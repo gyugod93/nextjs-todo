@@ -1,3 +1,4 @@
+import { Todo } from "@/app/types/todo";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
@@ -24,6 +25,11 @@ export async function GET(request: Request) {
   }
 
   const todos = await response.json();
+  todos.sort(
+    (a: Todo, b: Todo) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
   return NextResponse.json(todos);
 }
 

@@ -51,17 +51,23 @@ export default function TodoList() {
         </div>
       ) : todos.length > 0 ? (
         <ul>
-          {todos.map((todo) => (
-            <TodoItem
-              key={todo.id}
-              todo={todo}
-              onToggle={toggleTodo}
-              onEdit={editTodo}
-              onDelete={() => handleDelete(todo.id)}
-              isUpdating={isUpdating}
-              isDeleting={isDeleting}
-            />
-          ))}
+          {todos
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            )
+            .map((todo) => (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                onToggle={toggleTodo}
+                onEdit={editTodo}
+                onDelete={() => handleDelete(todo.id)}
+                isUpdating={isUpdating}
+                isDeleting={isDeleting}
+              />
+            ))}
         </ul>
       ) : (
         <div className="rounded-md bg-muted/50 p-10 text-center text-muted-foreground">

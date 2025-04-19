@@ -70,6 +70,7 @@ export function useTodos() {
     const newTodo: TodoInput = {
       title,
       completed: false,
+      createdAt: new Date().toISOString(),
     };
     createTodoMutation.mutate(newTodo);
   };
