@@ -30,24 +30,24 @@ export default function TodoList() {
 
   if (isError) {
     return (
-      <div className="rounded-md bg-destructive/10 p-4 text-destructive">
+      <div className="rounded-md bg-red-100 p-4 text-red-600">
         투두를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-3xl">
-      <h1 className="mb-6 text-center text-3xl font-bold">투두 리스트</h1>
+    <div className="w-full">
+      <h1 className="mb-6 text-3xl text-center font-bold">Todo List</h1>
 
       <TodoForm onSubmit={addTodo} isLoading={isCreating} />
 
       <TodoFilter currentFilter={filter} onFilterChange={setFilter} />
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
+        <div className="py-12">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <span className="ml-2 text-muted-foreground">로딩 중...</span>
+          <span className="ml-2 text-gray-500">로딩 중...</span>
         </div>
       ) : todos.length > 0 ? (
         <ul>
@@ -70,7 +70,7 @@ export default function TodoList() {
             ))}
         </ul>
       ) : (
-        <div className="rounded-md bg-muted/50 p-10 text-center text-muted-foreground">
+        <div className="rounded-md bg-gray-200 p-10 text-gray-600">
           {filter === "all"
             ? "등록된 할 일이 없습니다."
             : filter === "active"

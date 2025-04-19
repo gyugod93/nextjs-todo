@@ -14,46 +14,43 @@ export default function TodoForm({
   isLoading = false,
 }: TodoFormProps) {
   const [title, setTitle] = useState("");
-  const [showError, setShowError] = useState(false); // 경고 메시지 표시 여부
+  const [showError, setShowError] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim()) {
-      setShowError(true); // 경고 메시지 표시
+      setShowError(true);
       return;
     }
 
     onSubmit(title.trim());
     setTitle("");
-    setShowError(false); // 성공적으로 제출되면 경고 메시지 숨김
+    setShowError(false);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mb-6 flex w-full flex-col gap-2 md:flex-row"
-    >
-      <div className="flex-1">
+    <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-2">
+      <div>
         <Input
           placeholder="할 일을 입력하세요"
           value={title}
           onChange={(e) => {
             setTitle(e.target.value);
-            setShowError(false); // 입력 중에는 경고 메시지 숨김
+            setShowError(false);
           }}
           disabled={isLoading}
           className="w-full"
         />
         {showError && (
-          <p className="mt-1 text-sm text-red-500">할 일을 입력해주세요</p> // 경고 메시지 표시
+          <p className="mt-1 text-sm text-red-500">할 일을 입력해주세요</p>
         )}
       </div>
       <Button
         type="submit"
         variant="default"
         disabled={isLoading}
-        className="md:w-auto"
+        className="w-full"
       >
         {isLoading && (
           <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />

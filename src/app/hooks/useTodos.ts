@@ -14,7 +14,7 @@ export function useTodos() {
   const [filter, setFilter] = useState<TodoFilter>("all");
 
   const {
-    data: todos = [],
+    data: allTodos = [],
     isLoading,
     isError,
     error,
@@ -22,6 +22,13 @@ export function useTodos() {
     queryKey: ["todos", filter],
     queryFn: () =>
       filter === "all" ? fetchTodos() : fetchFilteredTodos(filter),
+  });
+
+  const todos = allTodos.filter((todo) => {
+    if (filter === "all") return true;
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+    return true;
   });
 
   const createTodoMutation = useMutation({
@@ -81,9 +88,9 @@ export function useTodos() {
   };
 
   const editTodo = (id: string, title: string) => {
-    const todoToUpdata = todos.find((todo) => todo.id === id);
-    if (todoToUpdata) {
-      const updatedTodo = { ...todoToUpdata, title };
+    const todoToUpdate = todos.find((todo) => todo.id === id);
+    if (todoToUpdate) {
+      const updatedTodo = { ...todoToUpdate, title };
       updateTodoMutation.mutate(updatedTodo);
     }
   };
