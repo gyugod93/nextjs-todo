@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Todo } from "../types/todo";
@@ -27,29 +28,34 @@ export default function TodoItem({
 
   const handleEdit = () => {
     if (editedTitle.trim() && editedTitle !== todo.title) {
-      onEdit(todo.id, editedTitle.trim()); // 수정 요청
+      onEdit(todo.id, editedTitle.trim());
     }
-    setIsEditing(false); // 수정 모드 종료
+    setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditedTitle(todo.title); // 원래 제목으로 복원
-    setIsEditing(false); // 수정 모드 종료
+    setEditedTitle(todo.title);
+    setIsEditing(false);
   };
 
   return (
     <li
-      className={`group mb-3 flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all ${
-        todo.completed ? "bg-gray-50" : ""
-      }`}
+      className={`group mb-3 flex items-center justify-between rounded-lg border ${
+        todo.completed
+          ? "bg-green-200 border-green-400"
+          : "bg-blue-100 border-blue-300"
+      } p-4 shadow-sm transition-all`}
     >
       <div className="flex flex-1 items-center">
-        <input
-          type="checkbox"
+        <Checkbox
           checked={todo.completed}
-          onChange={() => onToggle(todo)}
+          onCheckedChange={() => onToggle(todo)}
           disabled={isUpdating}
-          className="mr-3 h-5 w-5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          className={`mr-3 h-5 w-5 rounded border-2 ${
+            todo.completed
+              ? "border-green-600 bg-green-100"
+              : "border-blue-600 bg-blue-50"
+          }`}
         />
 
         {isEditing ? (
@@ -63,8 +69,10 @@ export default function TodoItem({
           />
         ) : (
           <span
-            className={`flex-1 text-gray-700 ${
-              todo.completed ? "text-gray-400 line-through" : ""
+            className={`flex-1 ${
+              todo.completed
+                ? "text-gray-600 line-through"
+                : "text-gray-900 font-semibold"
             }`}
           >
             {todo.title}
