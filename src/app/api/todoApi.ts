@@ -44,7 +44,7 @@ export const createTodo = async (todoInput: TodoInput): Promise<Todo> => {
 };
 
 export const updateTodo = async (todo: Todo): Promise<Todo> => {
-  const response = await fetch(`/api/todos/${todo.id}`, {
+  const response = await fetch(`/api/todos`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

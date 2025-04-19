@@ -27,22 +27,21 @@ export default function TodoItem({
 
   const handleEdit = () => {
     if (editedTitle.trim() && editedTitle !== todo.title) {
-      onEdit(todo.id, editedTitle.trim());
+      onEdit(todo.id, editedTitle.trim()); // 수정 요청
     }
-    setIsEditing(false);
+    setIsEditing(false); // 수정 모드 종료
   };
 
   const handleCancel = () => {
-    setEditedTitle(todo.title);
-    setIsEditing(false);
+    setEditedTitle(todo.title); // 원래 제목으로 복원
+    setIsEditing(false); // 수정 모드 종료
   };
 
   return (
     <li
-      className={`
-        group mb-3 flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all
-        ${todo.completed ? "bg-gray-50" : ""}
-      `}
+      className={`group mb-3 flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all ${
+        todo.completed ? "bg-gray-50" : ""
+      }`}
     >
       <div className="flex flex-1 items-center">
         <input
@@ -64,10 +63,9 @@ export default function TodoItem({
           />
         ) : (
           <span
-            className={`
-              flex-1 text-gray-700
-              ${todo.completed ? "text-gray-400 line-through" : ""}
-            `}
+            className={`flex-1 text-gray-700 ${
+              todo.completed ? "text-gray-400 line-through" : ""
+            }`}
           >
             {todo.title}
           </span>
@@ -113,7 +111,7 @@ export default function TodoItem({
               size="sm"
               variant="destructive"
               onClick={() => onDelete(todo.id)}
-              disabled={isUpdating}
+              disabled={isUpdating || isDeleting}
             >
               {isDeleting && (
                 <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
