@@ -14,7 +14,8 @@ export function useTodos() {
     error,
   } = useQuery({
     queryKey: ["todos"],
-    queryFn: () => fetchTodos(),
+    queryFn: fetchTodos,
+    staleTime: 5 * 60 * 1000,
   });
 
   const todos = allTodos.filter((todo) => {

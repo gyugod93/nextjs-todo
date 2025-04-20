@@ -1,39 +1,15 @@
 import { Todo, TodoInput } from "../types/todo";
 
 export const fetchTodos = async (): Promise<Todo[]> => {
-  const url = "/api/todos"; // 항상 전체 데이터를 가져옴
-  console.log("Fetching todos from:", url);
+  const url = "/api/todos";
+  console.log("Fetching todos started:", new Date().toISOString());
   const response = await fetch(url);
+  console.log("Fetching todos ended:", new Date().toISOString());
   if (!response.ok) {
     throw new Error("Failed to fetch todos");
   }
   return response.json();
 };
-// export const fetchTodos = async (): Promise<Todo[]> => {
-//   const response = await fetch("/api/todos");
-//   if (!response.ok) {
-//     throw new Error("Failed to fetch todos");
-//   }
-//   return response.json();
-// };
-
-// export const fetchFilteredTodos = async (
-//   filter: TodoFilter
-// ): Promise<Todo[]> => {
-//   let url = "/api/todos";
-
-//   if (filter === "active") {
-//     url += "?completed=false";
-//   } else if (filter === "completed") {
-//     url += "?completed=true";
-//   }
-
-//   const response = await fetch(url);
-//   if (!response.ok) {
-//     throw new Error(`Failed to fetch ${filter} todos`);
-//   }
-//   return response.json();
-// };
 
 export const createTodo = async (todoInput: TodoInput): Promise<Todo> => {
   const response = await fetch("/api/todos", {

@@ -11,13 +11,15 @@ export default async function Home() {
 
   // SSR
   await queryClient.prefetchQuery({
-    queryKey: ["todos", "all"],
-    queryFn: () => fetchTodos(),
+    queryKey: ["todos"],
+    queryFn: fetchTodos,
   });
+
+  const dehydratedState = dehydrate(queryClient);
 
   return (
     <div className="flex w-full max-w-4xl flex-col items-center bg-card p-6 shadow-md rounded-lg">
-      <HydrationBoundary state={dehydrate(queryClient)}>
+      <HydrationBoundary state={dehydratedState}>
         <TodoList />
       </HydrationBoundary>
     </div>

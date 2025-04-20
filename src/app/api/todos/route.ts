@@ -16,7 +16,9 @@ export async function GET(request: Request) {
     url += "?completed=true";
   }
   console.log("Fetching route.ts url from:", url);
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    cache: "force-cache",
+  });
   if (!response.ok) {
     return NextResponse.json(
       { error: "Failed to fetch todos" },
