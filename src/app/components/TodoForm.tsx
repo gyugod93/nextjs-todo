@@ -23,15 +23,17 @@ export default function TodoForm({
       setShowError(true);
       return;
     }
-
     onSubmit(title.trim());
     setTitle("");
     setShowError(false);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-2">
-      <div>
+    <form
+      onSubmit={handleSubmit}
+      className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center"
+    >
+      <div className="flex-1">
         <Input
           placeholder="할 일을 입력하세요"
           value={title}
@@ -50,7 +52,7 @@ export default function TodoForm({
         type="submit"
         variant="default"
         disabled={isLoading}
-        className="w-full"
+        className="w-full sm:w-auto"
       >
         {isLoading && (
           <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />

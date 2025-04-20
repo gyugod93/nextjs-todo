@@ -19,7 +19,7 @@ export default function TodoFilter({
   ];
 
   return (
-    <div className="mb-6 flex gap-2">
+    <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
       {filters.map(({ value, label }) => (
         <Button
           key={value}

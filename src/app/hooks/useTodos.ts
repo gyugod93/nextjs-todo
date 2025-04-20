@@ -25,12 +25,16 @@ export function useTodos() {
     return true;
   });
 
-  const createTodoMutation = useMutation({
-    mutationFn: createTodo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
+const createTodoMutation = useMutation({
+  mutationFn: createTodo,
+  onSuccess: () => {
+    console.log("invalidateQueries 호출됨");
+    queryClient.invalidateQueries({ queryKey: ["todos"] });
+  },
+  onError: (error) => {
+    console.error("투두 추가 실패:", error);
+  },
+});
 
   const updateTodoMutation = useMutation({
     mutationFn: updateTodo,

@@ -4,22 +4,22 @@ import { v4 as uuidv4 } from "uuid";
 
 const API_URL = "http://localhost:3001/todos";
 
-// GET: Fetch all todos
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const filter = searchParams.get("filter") || "all";
 
-  let url = API_URL;
+  let url = API_URL; // 기본 URL 설정
   if (filter === "active") {
     url += "?completed=false";
   } else if (filter === "completed") {
     url += "?completed=true";
   }
-  console.log("Fetching route.ts url from:", url);
-  const response = await fetch(url, {
-    cache: "force-cache",
-  });
+
+  console.log("Fetching todos from:", url); // 디버깅 로그
+
+  const response = await fetch(url); // 올바른 URL로 요청
   if (!response.ok) {
+    console.error("Failed to fetch todos:", response.status);
     return NextResponse.json(
       { error: "Failed to fetch todos" },
       { status: 500 }
@@ -27,6 +27,8 @@ export async function GET(request: Request) {
   }
 
   const todos = await response.json();
+  console.log("Fetched todos:", todos); // 반환 데이터 확인
+
   todos.sort(
     (a: Todo, b: Todo) =>
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -38,6 +40,7 @@ export async function GET(request: Request) {
 // POST: Create a new todo
 export async function POST(request: Request) {
   const todoInput = await request.json();
+  console.log("Received todoInput:", todoInput); // 디버깅 로그
 
   const response = await fetch(API_URL, {
     method: "POST",
@@ -51,6 +54,8 @@ export async function POST(request: Request) {
   });
 
   if (!response.ok) {
+    const errorText = await response.text(); // 에러 메시지 확인
+    console.error("Failed to create todo:", response.status, errorText);
     return NextResponse.json(
       { error: "Failed to create todo" },
       { status: 500 }
@@ -58,6 +63,7 @@ export async function POST(request: Request) {
   }
 
   const newTodo = await response.json();
+  console.log("Created newTodo:", newTodo); // 디버깅 로그
   return NextResponse.json(newTodo);
 }
 

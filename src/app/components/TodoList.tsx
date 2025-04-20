@@ -37,20 +37,24 @@ export default function TodoList() {
   }
 
   return (
-    <div className="w-full">
-      <h1 className="mb-6 text-3xl text-center font-bold">Todo List</h1>
+    <div className="w-full max-w-4xl mx-auto px-4 py-8 bg-gray-50 rounded-lg shadow-md">
+      <h1 className="mb-8 text-4xl text-center font-bold text-gray-800">
+        Todo List
+      </h1>
 
       <TodoForm onSubmit={addTodo} isLoading={isCreating} />
 
-      <TodoFilter currentFilter={filter} onFilterChange={setFilter} />
+      <div className="mt-8 mb-6">
+        <TodoFilter currentFilter={filter} onFilterChange={setFilter} />
+      </div>
 
       {isLoading ? (
-        <div className="py-12">
+        <div className="py-12 flex flex-col items-center">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <span className="ml-2 text-gray-500">로딩 중...</span>
+          <span className="mt-4 text-gray-500">로딩 중...</span>
         </div>
       ) : todos.length > 0 ? (
-        <ul>
+        <ul className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {todos
             .sort(
               (a, b) =>
@@ -70,7 +74,7 @@ export default function TodoList() {
             ))}
         </ul>
       ) : (
-        <div className="rounded-md bg-gray-200 p-10 text-gray-600">
+        <div className="rounded-md bg-gray-200 p-10 text-center text-gray-600 my-8">
           {filter === "all"
             ? "등록된 할 일이 없습니다."
             : filter === "active"
