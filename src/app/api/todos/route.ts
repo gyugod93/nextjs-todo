@@ -2,7 +2,7 @@ import { Todo } from "@/app/types/todo";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
-const API_URL = "http://localhost:3001/todos";
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -15,8 +15,6 @@ export async function GET(request: Request) {
     url += "?completed=true";
   }
 
-  console.log("Fetching todos from:", url); // 디버깅 로그
-
   const response = await fetch(url); // 올바른 URL로 요청
   if (!response.ok) {
     console.error("Failed to fetch todos:", response.status);
@@ -27,7 +25,6 @@ export async function GET(request: Request) {
   }
 
   const todos = await response.json();
-  console.log("Fetched todos:", todos); // 반환 데이터 확인
 
   todos.sort(
     (a: Todo, b: Todo) =>
