@@ -7,7 +7,7 @@ const API_URL = "http://localhost:3001/todos";
 // GET: Fetch all todos
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const filter = searchParams.get("filter");
+  const filter = searchParams.get("filter") || "all";
 
   let url = API_URL;
   if (filter === "active") {
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   } else if (filter === "completed") {
     url += "?completed=true";
   }
-
+  console.log("Fetching route.ts url from:", url);
   const response = await fetch(url);
   if (!response.ok) {
     return NextResponse.json(

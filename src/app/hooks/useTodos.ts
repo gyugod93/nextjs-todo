@@ -1,12 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import {
-  createTodo,
-  deleteTodo,
-  fetchFilteredTodos,
-  fetchTodos,
-  updateTodo,
-} from "../api/todoApi";
+import { createTodo, deleteTodo, fetchTodos, updateTodo } from "../api/todoApi";
 import { Todo, TodoFilter, TodoInput } from "../types/todo";
 
 export function useTodos() {
@@ -19,9 +13,8 @@ export function useTodos() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["todos", filter],
-    queryFn: () =>
-      filter === "all" ? fetchTodos() : fetchFilteredTodos(filter),
+    queryKey: ["todos"],
+    queryFn: () => fetchTodos(),
   });
 
   const todos = allTodos.filter((todo) => {
