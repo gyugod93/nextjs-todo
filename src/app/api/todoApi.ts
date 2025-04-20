@@ -1,7 +1,5 @@
 import { Todo, TodoFilter, TodoInput } from "../types/todo";
 
-const API_URL = "http://localhost:3001";
-
 export const fetchTodos = async (): Promise<Todo[]> => {
   const response = await fetch("/api/todos");
   if (!response.ok) {
