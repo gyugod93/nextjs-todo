@@ -18,8 +18,8 @@ export default async function Home() {
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="flex w-full max-w-4xl flex-col items-center bg-card p-6 shadow-md rounded-lg">
+    <div className="flex justify-center items-center min-h-screen bg-gray-800">
+      <div className="flex w-full max-w-4xl flex-col items-center bg-white p-6 shadow-md rounded-lg">
         <HydrationBoundary state={dehydratedState}>
           <TodoList />
         </HydrationBoundary>

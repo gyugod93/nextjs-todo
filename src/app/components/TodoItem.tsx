@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import { Todo } from "../types/todo";
 
 interface TodoItemProps {
@@ -27,75 +27,70 @@ export default function TodoItem({
   const [editedTitle, setEditedTitle] = useState(todo.title);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleEdit = useCallback(() => {
+  // 불필요한 useCallback 제거
+  const handleEdit = () => {
     if (editedTitle.trim() && editedTitle !== todo.title) {
       onEdit(todo.id, editedTitle.trim());
     }
     setIsEditing(false);
-  }, [editedTitle, todo.id, todo.title, onEdit]);
+  };
 
-  const handleCancel = useCallback(() => {
+  const handleCancel = () => {
     setEditedTitle(todo.title);
     setIsEditing(false);
-  }, [todo.title]);
+  };
 
-  const handleDelete = useCallback(() => {
+  const handleDelete = () => {
     onDelete(todo.id);
-  }, [onDelete, todo.id]);
+  };
 
-  const handleToggle = useCallback(() => {
+  const handleToggle = () => {
     onToggle(todo);
-  }, [onToggle, todo]);
+  };
 
-  const handleTitleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setEditedTitle(e.target.value);
-    },
-    []
-  );
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedTitle(e.target.value);
+  };
 
-  const toggleExpand = useCallback(() => {
+  const toggleExpand = () => {
     setIsExpanded(!isExpanded);
-  }, [isExpanded]);
+  };
 
-  const isTitleLong = useMemo(() => todo.title.length > 100, [todo.title]);
+  const isTitleLong = todo.title.length > 100;
 
-  const containerStyle = useMemo(() => {
-    return `group flex flex-col gap-3 rounded-lg border ${
-      todo.completed
-        ? "bg-green-100 border-green-300"
-        : "bg-blue-50 border-blue-200"
-    } p-4 shadow-sm h-full transition-all`;
-  }, [todo.completed]);
+  // 간단한 클래스 계산은 useMemo 없이 직접 작성
+  const containerClass = `group flex flex-col gap-3 rounded-lg border ${
+    todo.completed
+      ? "bg-green-100 border-green-300"
+      : "bg-blue-50 border-blue-200"
+  } p-4 shadow-sm h-full transition-all`;
 
-  const checkboxStyle = useMemo(() => {
-    return `mt-1 h-5 w-5 shrink-0 rounded border-2 ${
-      todo.completed
-        ? "border-green-600 bg-green-50"
-        : "border-blue-600 bg-blue-50"
-    }`;
-  }, [todo.completed]);
+  const checkboxClass = `mt-1 h-5 w-5 shrink-0 rounded border-2 ${
+    todo.completed
+      ? "border-green-600 bg-green-50"
+      : "border-blue-600 bg-blue-50"
+  }`;
 
-  const titleStyle = useMemo(() => {
-    return `break-words text-sm ${
-      todo.completed
-        ? "text-gray-500 line-through"
-        : "text-gray-800 font-medium"
-    }`;
-  }, [todo.completed]);
+  const titleClass = `break-words text-sm ${
+    todo.completed
+      ? "text-gray-700 line-through" // 색상 대비 개선
+      : "text-gray-800 font-medium"
+  }`;
 
-  const formattedDate = useMemo(() => {
-    return todo.createdAt ? new Date(todo.createdAt).toLocaleDateString() : "";
-  }, [todo.createdAt]);
+  // 날짜 포맷팅은 필요할 때만 수행
+  const formattedDate = todo.createdAt
+    ? new Date(todo.createdAt).toLocaleDateString()
+    : "";
 
   return (
-    <li className={containerStyle}>
+    <li className={containerClass}>
       <div className="flex items-start gap-2">
         <Checkbox
           checked={todo.completed}
           onCheckedChange={handleToggle}
           disabled={isUpdating}
-          className={checkboxStyle}
+          className={checkboxClass}
+          aria-label={`${todo.completed ? "완료됨" : "미완료"}: ${todo.title}`}
         />
 
         {isEditing ? (
@@ -106,11 +101,12 @@ export default function TodoItem({
             disabled={isUpdating}
             onKeyDown={(e) => e.key === "Enter" && handleEdit()}
             className="flex-1 py-1"
+            aria-label="할 일 제목 편집"
           />
         ) : (
           <div className="flex-1 min-w-0">
             <p
-              className={titleStyle}
+              className={titleClass}
               style={{
                 wordBreak: "break-word",
                 overflow: "hidden",
@@ -126,7 +122,8 @@ export default function TodoItem({
             {isTitleLong && (
               <button
                 onClick={toggleExpand}
-                className="text-xs text-blue-600 hover:text-blue-800 mt-1 font-medium"
+                className="text-xs text-blue-700 hover:text-blue-900 mt-1 font-medium"
+                aria-label={isExpanded ? "내용 접기" : "내용 더 보기"}
               >
                 {isExpanded ? "접기" : "더 보기..."}
               </button>
@@ -146,6 +143,7 @@ export default function TodoItem({
                 !editedTitle.trim() || editedTitle === todo.title || isUpdating
               }
               className="h-8 px-3 text-xs"
+              aria-label="할 일 수정 저장"
             >
               저장
             </Button>
@@ -155,6 +153,7 @@ export default function TodoItem({
               onClick={handleCancel}
               disabled={isUpdating}
               className="h-8 px-3 text-xs"
+              aria-label="할 일 수정 취소"
             >
               취소
             </Button>
@@ -166,7 +165,8 @@ export default function TodoItem({
               variant="secondary"
               onClick={() => setIsEditing(true)}
               disabled={isUpdating || isDeleting}
-              className="h-8 px-3 text-xs"
+              className="h-8 px-3 text-xs bg-blue-500 text-white hover:bg-blue-600"
+              aria-label={`'${todo.title}' 할 일 수정`}
             >
               수정
             </Button>
@@ -176,6 +176,7 @@ export default function TodoItem({
               onClick={handleDelete}
               disabled={isUpdating || isDeleting}
               className="h-8 px-3 text-xs"
+              aria-label={`'${todo.title}' 할 일 삭제`}
             >
               삭제
             </Button>
@@ -184,7 +185,7 @@ export default function TodoItem({
       </div>
 
       {todo.createdAt && (
-        <div className="text-xs text-gray-500 mt-1">{formattedDate}</div>
+        <div className="text-xs text-gray-700 mt-1">{formattedDate}</div>
       )}
     </li>
   );

@@ -1,10 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useMemo } from "react";
 import { useTodos } from "../hooks/useTodos";
-import TodoFilter from "./TodoFilter";
-import TodoForm from "./TodoForm";
 import TodoItem from "./TodoItem";
+
+const TodoFilter = dynamic(() => import("./TodoFilter"), {
+  ssr: false, // 클라이언트에서만 필요한 경우
+  loading: () => (
+    <div className="h-10 bg-gray-100 animate-pulse rounded-md"></div>
+  ),
+});
+
+const TodoForm = dynamic(() => import("./TodoForm"), {
+  ssr: true, // 초기 렌더링에 중요한 경우
+});
 
 export default function TodoList() {
   const {
@@ -32,6 +42,12 @@ export default function TodoList() {
     [removeTodo]
   );
 
+  const sortedTodos = useMemo(() => {
+    return [...todos].sort((a, b) => {
+      return a.createdAt > b.createdAt ? -1 : 1;
+    });
+  }, [todos]);
+
   if (isError) {
     return (
       <div className="rounded-md bg-red-100 p-4 text-red-600">
@@ -40,15 +56,8 @@ export default function TodoList() {
     );
   }
 
-  const sortedTodos = useMemo(() => {
-    return [...todos].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-  }, [todos]);
-
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 bg-gray-50 rounded-lg shadow-md">
+    <div className="w-full max-w-4xl mx-auto px-4 py-8 bg-white rounded-lg shadow-md">
       <h1 className="mb-8 text-4xl text-center font-bold text-gray-800">
         Todo List
       </h1>

@@ -8,14 +8,14 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const filter = searchParams.get("filter") || "all";
 
-  let url = API_URL; // 기본 URL 설정
+  let url = API_URL;
   if (filter === "active") {
     url += "?completed=false";
   } else if (filter === "completed") {
     url += "?completed=true";
   }
 
-  const response = await fetch(url); // 올바른 URL로 요청
+  const response = await fetch(url);
   if (!response.ok) {
     console.error("Failed to fetch todos:", response.status);
     return NextResponse.json(
@@ -34,10 +34,9 @@ export async function GET(request: Request) {
   return NextResponse.json(todos);
 }
 
-// POST: Create a new todo
 export async function POST(request: Request) {
   const todoInput = await request.json();
-  console.log("Received todoInput:", todoInput); // 디버깅 로그
+  console.log("Received todoInput:", todoInput);
 
   const response = await fetch(API_URL, {
     method: "POST",
@@ -51,7 +50,7 @@ export async function POST(request: Request) {
   });
 
   if (!response.ok) {
-    const errorText = await response.text(); // 에러 메시지 확인
+    const errorText = await response.text();
     console.error("Failed to create todo:", response.status, errorText);
     return NextResponse.json(
       { error: "Failed to create todo" },
@@ -60,11 +59,10 @@ export async function POST(request: Request) {
   }
 
   const newTodo = await response.json();
-  console.log("Created newTodo:", newTodo); // 디버깅 로그
+  console.log("Created newTodo:", newTodo);
   return NextResponse.json(newTodo);
 }
 
-// PUT: Update a todo
 export async function PUT(request: Request) {
   const todo = await request.json();
 
@@ -87,7 +85,6 @@ export async function PUT(request: Request) {
   return NextResponse.json(updatedTodo);
 }
 
-// DELETE: Delete a todo
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
