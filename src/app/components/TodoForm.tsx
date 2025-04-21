@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 interface TodoFormProps {
   onSubmit: (title: string) => void;
@@ -16,17 +16,25 @@ export default function TodoForm({
   const [title, setTitle] = useState("");
   const [showError, setShowError] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
 
-    if (!title.trim()) {
-      setShowError(true);
-      return;
-    }
-    onSubmit(title.trim());
-    setTitle("");
+      if (!title.trim()) {
+        setShowError(true);
+        return;
+      }
+      onSubmit(title.trim());
+      setTitle("");
+      setShowError(false);
+    },
+    [title, onSubmit]
+  );
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
     setShowError(false);
-  };
+  }, []);
 
   return (
     <form
@@ -37,10 +45,7 @@ export default function TodoForm({
         <Input
           placeholder="할 일을 입력하세요"
           value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
-            setShowError(false);
-          }}
+          onChange={handleChange}
           disabled={isLoading}
           className="w-full"
         />

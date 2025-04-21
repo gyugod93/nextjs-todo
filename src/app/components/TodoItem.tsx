@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Todo } from "../types/todo";
 
 interface TodoItemProps {
@@ -27,49 +27,81 @@ export default function TodoItem({
   const [editedTitle, setEditedTitle] = useState(todo.title);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     if (editedTitle.trim() && editedTitle !== todo.title) {
       onEdit(todo.id, editedTitle.trim());
     }
     setIsEditing(false);
-  };
+  }, [editedTitle, todo.id, todo.title, onEdit]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setEditedTitle(todo.title);
     setIsEditing(false);
-  };
+  }, [todo.title]);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     onDelete(todo.id);
-  };
+  }, [onDelete, todo.id]);
 
-  // 글자 수에 따라 축소 표시 여부 결정
-  const isTitleLong = todo.title.length > 100;
+  const handleToggle = useCallback(() => {
+    onToggle(todo);
+  }, [onToggle, todo]);
+
+  const handleTitleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setEditedTitle(e.target.value);
+    },
+    []
+  );
+
+  const toggleExpand = useCallback(() => {
+    setIsExpanded(!isExpanded);
+  }, [isExpanded]);
+
+  const isTitleLong = useMemo(() => todo.title.length > 100, [todo.title]);
+
+  const containerStyle = useMemo(() => {
+    return `group flex flex-col gap-3 rounded-lg border ${
+      todo.completed
+        ? "bg-green-100 border-green-300"
+        : "bg-blue-50 border-blue-200"
+    } p-4 shadow-sm h-full transition-all`;
+  }, [todo.completed]);
+
+  const checkboxStyle = useMemo(() => {
+    return `mt-1 h-5 w-5 shrink-0 rounded border-2 ${
+      todo.completed
+        ? "border-green-600 bg-green-50"
+        : "border-blue-600 bg-blue-50"
+    }`;
+  }, [todo.completed]);
+
+  const titleStyle = useMemo(() => {
+    return `break-words text-sm ${
+      todo.completed
+        ? "text-gray-500 line-through"
+        : "text-gray-800 font-medium"
+    }`;
+  }, [todo.completed]);
+
+  const formattedDate = useMemo(() => {
+    return todo.createdAt ? new Date(todo.createdAt).toLocaleDateString() : "";
+  }, [todo.createdAt]);
 
   return (
-    <li
-      className={`group flex flex-col gap-3 rounded-lg border ${
-        todo.completed
-          ? "bg-green-100 border-green-300"
-          : "bg-blue-50 border-blue-200"
-      } p-4 shadow-sm h-full transition-all`}
-    >
+    <li className={containerStyle}>
       <div className="flex items-start gap-2">
         <Checkbox
           checked={todo.completed}
-          onCheckedChange={() => onToggle(todo)}
+          onCheckedChange={handleToggle}
           disabled={isUpdating}
-          className={`mt-1 h-5 w-5 shrink-0 rounded border-2 ${
-            todo.completed
-              ? "border-green-600 bg-green-50"
-              : "border-blue-600 bg-blue-50"
-          }`}
+          className={checkboxStyle}
         />
 
         {isEditing ? (
           <Input
             value={editedTitle}
-            onChange={(e) => setEditedTitle(e.target.value)}
+            onChange={handleTitleChange}
             autoFocus
             disabled={isUpdating}
             onKeyDown={(e) => e.key === "Enter" && handleEdit()}
@@ -78,11 +110,7 @@ export default function TodoItem({
         ) : (
           <div className="flex-1 min-w-0">
             <p
-              className={`break-words text-sm ${
-                todo.completed
-                  ? "text-gray-500 line-through"
-                  : "text-gray-800 font-medium"
-              }`}
+              className={titleStyle}
               style={{
                 wordBreak: "break-word",
                 overflow: "hidden",
@@ -97,7 +125,7 @@ export default function TodoItem({
 
             {isTitleLong && (
               <button
-                onClick={() => setIsExpanded(!isExpanded)}
+                onClick={toggleExpand}
                 className="text-xs text-blue-600 hover:text-blue-800 mt-1 font-medium"
               >
                 {isExpanded ? "접기" : "더 보기..."}
@@ -156,9 +184,7 @@ export default function TodoItem({
       </div>
 
       {todo.createdAt && (
-        <div className="text-xs text-gray-500 mt-1">
-          {new Date(todo.createdAt).toLocaleDateString()}
-        </div>
+        <div className="text-xs text-gray-500 mt-1">{formattedDate}</div>
       )}
     </li>
   );

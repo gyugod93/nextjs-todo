@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
 import { useTodos } from "../hooks/useTodos";
 import TodoFilter from "./TodoFilter";
 import TodoForm from "./TodoForm";
@@ -21,12 +22,15 @@ export default function TodoList() {
     isDeleting,
   } = useTodos();
 
-  const handleDelete = (id: string) => {
-    const confirmed = window.confirm("정말로 삭제하시겠습니까?");
-    if (confirmed) {
-      removeTodo(id);
-    }
-  };
+  const handleDelete = useCallback(
+    (id: string) => {
+      const confirmed = window.confirm("정말로 삭제하시겠습니까?");
+      if (confirmed) {
+        removeTodo(id);
+      }
+    },
+    [removeTodo]
+  );
 
   if (isError) {
     return (
@@ -35,6 +39,13 @@ export default function TodoList() {
       </div>
     );
   }
+
+  const sortedTodos = useMemo(() => {
+    return [...todos].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }, [todos]);
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8 bg-gray-50 rounded-lg shadow-md">
@@ -55,23 +66,17 @@ export default function TodoList() {
         </div>
       ) : todos.length > 0 ? (
         <ul className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {todos
-            .sort(
-              (a, b) =>
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime()
-            )
-            .map((todo) => (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                onToggle={toggleTodo}
-                onEdit={editTodo}
-                onDelete={() => handleDelete(todo.id)}
-                isUpdating={isUpdating}
-                isDeleting={isDeleting}
-              />
-            ))}
+          {sortedTodos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              onToggle={toggleTodo}
+              onEdit={editTodo}
+              onDelete={() => handleDelete(todo.id)}
+              isUpdating={isUpdating}
+              isDeleting={isDeleting}
+            />
+          ))}
         </ul>
       ) : (
         <div className="rounded-md bg-gray-200 p-10 text-center text-gray-600 my-8">
